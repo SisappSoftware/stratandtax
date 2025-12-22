@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <!-- =========================================================
+    Strat & Tax - Landing (Index)
+    Estructura enterprise, escalable, sin CSS inline
+  ========================================================== -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b1020" />
+  <title>Strat & Tax | Plataforma Fiscal Empresarial</title>
+  <meta name="description" content="Plataforma fiscal empresarial: automatización documental, cumplimiento y trazabilidad sobre AWS." />
+
+  <!-- Performance: preconnect fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Premium font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style2.css" />
+
+</head>
+
+<body>
+  <!-- =========================================================
+    Background Effects (decor only)
+  ========================================================== -->
+  <div class="fx" aria-hidden="true">
+    <div class="fx-orb fx-orb--1"></div>
+    <div class="fx-orb fx-orb--2"></div>
+    <div class="fx-orb fx-orb--3"></div>
+    <div class="fx-grid"></div>
+    <div class="fx-vignette"></div>
+  </div>
+
+  <!-- =========================================================
+    Top Navigation
+  ========================================================== -->
+  <header class="topbar" role="banner">
+    <div class="container topbar__inner">
+      <a class="brand" href="index.html" aria-label="Inicio">
+        <span class="brand__mark" aria-hidden="true">
+          <!-- Logo local opcional -->
+          <img class="brand__logo" src="stratandtax.png" alt="" onerror="this.style.display='none'">
+          <span class="brand__fallback">S</span>
+        </span>
+        <span class="brand__meta">
+          <span class="brand__name">STRAT &amp; TAX</span>
+          <span class="brand__tag">Fiscal · Compliance · Automatización</span>
+        </span>
+      </a>
+
+      <nav class="nav" aria-label="Navegación principal">
+        <a class="nav__link" href="#solucion">Solución</a>
+        <a class="nav__link" href="#servicios">Servicios</a>
+        <a class="nav__link" href="#proceso">Proceso</a>
+        <a class="nav__link" href="#seguridad">Seguridad</a>
+        <a class="nav__link nav__link--cta" href="contacto.html">Acceso clientes</a>
+      </nav>
+
+      <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" id="navToggle">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="nav-drawer" id="navDrawer" aria-hidden="true">
+      <div class="nav-drawer__inner">
+        <a class="nav-drawer__link" href="#solucion">Solución</a>
+        <a class="nav-drawer__link" href="#servicios">Servicios</a>
+        <a class="nav-drawer__link" href="#proceso">Proceso</a>
+        <a class="nav-drawer__link" href="#seguridad">Seguridad</a>
+        <a class="btn btn--primary btn--full" href="contacto.html">Acceso clientes →</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================
+    Main Content
+  ========================================================== -->
+  <main role="main">
+    <!-- =======================================================
+      HERO
+    ======================================================== -->
+    <section class="hero" id="inicio">
+      <div class="container hero__inner">
+        <div class="hero__copy">
+          <div class="badge">
+            <span class="badge__dot" aria-hidden="true"></span>
+            Plataforma empresarial · AWS Ready · Flujos trazables
+          </div>
+
+          <h1 class="hero__title">
+            Fiscalidad corporativa con
+            <span class="text-gradient">precisión</span>,
+            <span class="text-gradient">control</span> y
+            <span class="text-gradient">velocidad</span>.
+          </h1>
+
+          <p class="hero__subtitle">
+            Automatizá generación de documentos, controlá el ciclo de órdenes y mantené cumplimiento
+            con procesos claros. Interfaz premium. Backend sólido.
+          </p>
+
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="contacto.html">
+              Ingresar al sistema <span class="btn__icon" aria-hidden="true">→</span>
+            </a>
+            <a class="btn btn--ghost" href="#solucion">Ver solución</a>
+          </div>
+
+          <div class="hero__metrics" aria-label="Métricas clave">
+            <div class="metric">
+              <div class="metric__value">+99%</div>
+              <div class="metric__label">Consistencia documental</div>
+            </div>
+            <div class="metric">
+              <div class="metric__value">24/7</div>
+              <div class="metric__label">Acceso seguro</div>
+            </div>
+            <div class="metric">
+              <div class="metric__value">Serverless</div>
+              <div class="metric__label">Escalabilidad AWS</div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero__panel" aria-label="Resumen ejecutivo">
+          <div class="card card--glass">
+            <div class="card__header">
+              <div class="card__title">Resumen ejecutivo</div>
+              <div class="pill">Enterprise</div>
+            </div>
+
+            <div class="card__body">
+              <ul class="check">
+                <li><span class="check__i" aria-hidden="true">✓</span><span>Automatización de Word/ZIP</span></li>
+                <li><span class="check__i" aria-hidden="true">✓</span><span>Flujos trazables por usuario</span></li>
+                <li><span class="check__i" aria-hidden="true">✓</span><span>Integración con email / almacenamiento</span></li>
+                <li><span class="check__i" aria-hidden="true">✓</span><span>Escalable y auditable</span></li>
+              </ul>
+
+              <div class="divider"></div>
+
+              <div class="mini-kpis">
+                <div class="mini-kpi">
+                  <div class="mini-kpi__k">Riesgo ↓</div>
+                  <div class="mini-kpi__v">Control</div>
+                </div>
+                <div class="mini-kpi">
+                  <div class="mini-kpi__k">Tiempo ↓</div>
+                  <div class="mini-kpi__v">Automatización</div>
+                </div>
+                <div class="mini-kpi">
+                  <div class="mini-kpi__k">Decisión ↑</div>
+                  <div class="mini-kpi__v">Reportes</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card__footer">
+              <a class="btn btn--soft" href="contacto.html">Acceder</a>
+              <span class="muted">Acceso protegido · estándar corporativo</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="hero__fade" aria-hidden="true"></div>
+    </section>
+
+    <!-- =======================================================
+      SOLUCIÓN
+    ======================================================== -->
+    <section class="section" id="solucion">
+      <div class="container">
+        <header class="section__head">
+          <h2 class="h2">Una solución diseñada para operar</h2>
+          <p class="lead">
+            Menos fricción, más control. Procesos claros desde el login hasta la entrega del ZIP.
+          </p>
+        </header>
+
+        <div class="grid grid--3">
+          <article class="card card--feature">
+            <div class="icon icon--blue" aria-hidden="true">⧉</div>
+            <h3 class="h3">Automatización documental</h3>
+            <p class="muted">
+              Generación automática de archivos, consistencia de plantillas y salida controlada.
+            </p>
+          </article>
+
+          <article class="card card--feature">
+            <div class="icon icon--gold" aria-hidden="true">⌁</div>
+            <h3 class="h3">Trazabilidad</h3>
+            <p class="muted">
+              Control por usuario, estado del proceso y registro de actividad para auditoría interna.
+            </p>
+          </article>
+
+          <article class="card card--feature">
+            <div class="icon icon--green" aria-hidden="true">⇪</div>
+            <h3 class="h3">Escalabilidad</h3>
+            <p class="muted">
+              Arquitectura preparada para crecer: performance y seguridad sin complejidad.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+      SERVICIOS
+    ======================================================== -->
+    <section class="section section--alt" id="servicios">
+      <div class="container">
+        <header class="section__head">
+          <h2 class="h2">Servicios</h2>
+          <p class="lead">Un portafolio claro, corporativo y flexible para tu operación.</p>
+        </header>
+
+        <div class="grid grid--2">
+          <article class="card card--service">
+            <div class="service">
+              <div class="service__icon" aria-hidden="true">📌</div>
+              <div class="service__content">
+                <h3 class="h3">Consultoría fiscal</h3>
+                <p class="muted">Estrategias y optimización con foco en cumplimiento y riesgo.</p>
+                <ul class="bullets">
+                  <li>Planificación tributaria</li>
+                  <li>Revisión y consistencia documental</li>
+                  <li>Soporte a dirección</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article class="card card--service">
+            <div class="service">
+              <div class="service__icon" aria-hidden="true">🧾</div>
+              <div class="service__content">
+                <h3 class="h3">Auditoría & control</h3>
+                <p class="muted">Estandarización, control interno y preparación para revisiones.</p>
+                <ul class="bullets">
+                  <li>Checklist y flujos</li>
+                  <li>Validación de datos</li>
+                  <li>Reporte ejecutivo</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="cta">
+          <div class="cta__copy">
+            <h3 class="h3">¿Listo para operar con estándar enterprise?</h3>
+            <p class="muted">Accedé a la plataforma y gestioná solicitudes en minutos.</p>
+          </div>
+          <a class="btn btn--primary" href="contacto.html">Ir a Acceso →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+      PROCESO
+    ======================================================== -->
+    <section class="section" id="proceso">
+      <div class="container">
+        <header class="section__head">
+          <h2 class="h2">Proceso simple, resultado profesional</h2>
+          <p class="lead">Un flujo pensado para minimizar errores y acelerar entregas.</p>
+        </header>
+
+        <div class="timeline">
+          <div class="timeline__item">
+            <div class="timeline__dot" aria-hidden="true"></div>
+            <div class="timeline__content">
+              <div class="timeline__title">1) Acceso seguro</div>
+              <div class="muted">Login de cliente y sesión controlada.</div>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <div class="timeline__dot" aria-hidden="true"></div>
+            <div class="timeline__content">
+              <div class="timeline__title">2) Carga de datos</div>
+              <div class="muted">Formulario completo y validado.</div>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <div class="timeline__dot" aria-hidden="true"></div>
+            <div class="timeline__content">
+              <div class="timeline__title">3) Generación</div>
+              <div class="muted">Documentos + ZIP final, descarga controlada.</div>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <div class="timeline__dot" aria-hidden="true"></div>
+            <div class="timeline__content">
+              <div class="timeline__title">4) Distribución</div>
+              <div class="muted">Envío a email y/o almacenamiento según configuración.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+      SEGURIDAD
+    ======================================================== -->
+    <section class="section section--alt" id="seguridad">
+      <div class="container">
+        <header class="section__head">
+          <h2 class="h2">Seguridad y estándar corporativo</h2>
+          <p class="lead">
+            Capa visual pro + backend con controles de acceso. Sin “parches”, sin improvisación.
+          </p>
+        </header>
+
+        <div class="grid grid--3">
+          <article class="card card--feature">
+            <div class="icon icon--blue" aria-hidden="true">🔒</div>
+            <h3 class="h3">Acceso controlado</h3>
+            <p class="muted">Roles, sesiones y tokens. Sin exposición innecesaria.</p>
+          </article>
+
+          <article class="card card--feature">
+            <div class="icon icon--green" aria-hidden="true">🧠</div>
+            <h3 class="h3">Validación</h3>
+            <p class="muted">Campos consistentes y flujo claro para reducir errores.</p>
+          </article>
+
+          <article class="card card--feature">
+            <div class="icon icon--gold" aria-hidden="true">🧾</div>
+            <h3 class="h3">Auditable</h3>
+            <p class="muted">Diseñado para operar con trazabilidad y evidencia.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+      FINAL CTA
+    ======================================================== -->
+    <section class="section section--final">
+      <div class="container">
+        <div class="final">
+          <div class="final__copy">
+            <h2 class="h2">Entrá y generá tu solicitud</h2>
+            <p class="lead">Interfaz premium + flujo operativo. Listo para producción.</p>
+          </div>
+          <div class="final__actions">
+            <a class="btn btn--primary" href="contacto.html">Acceder ahora →</a>
+            <a class="btn btn--ghost" href="#inicio">Volver arriba</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================
+    Footer
+  ========================================================== -->
+  <footer class="footer" role="contentinfo">
+    <div class="container footer__inner">
+      <div class="footer__left">
+        <div class="footer__brand">STRAT &amp; TAX</div>
+        <div class="muted">© 2025 · Todos los derechos reservados</div>
+      </div>
+
+      <div class="footer__right">
+        <a class="footer__link" href="#solucion">Solución</a>
+        <a class="footer__link" href="#servicios">Servicios</a>
+        <a class="footer__link" href="#proceso">Proceso</a>
+        <a class="footer__link" href="contacto.html">Acceso</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+    Small JS: mobile nav
+  ========================================================== -->
+  <script>
+    (function () {
+      const toggle = document.getElementById('navToggle');
+      const drawer = document.getElementById('navDrawer');
+
+      function setOpen(open) {
+        document.body.classList.toggle('nav-open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+        drawer.setAttribute('aria-hidden', String(!open));
+      }
+
+      toggle?.addEventListener('click', () => {
+        const open = !document.body.classList.contains('nav-open');
+        setOpen(open);
+      });
+
+      drawer?.querySelectorAll('a')?.forEach(a => {
+        a.addEventListener('click', () => setOpen(false));
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setOpen(false);
+      });
+    })();
+  </script>
+</body>
+</html>

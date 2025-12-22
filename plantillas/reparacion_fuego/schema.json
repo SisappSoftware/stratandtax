@@ -1,0 +1,36 @@
+{
+  "label": "Reparación por incendio",
+  "description": "Solicitud de reparación de vivienda afectada por incendio",
+  "fields": [
+    {
+      "key": "NOMBRE",
+      "label": "Nombre del titular",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "DNI",
+      "label": "DNI",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "DOMICILIO",
+      "label": "Domicilio afectado",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "FECHA_INCENDIO",
+      "label": "Fecha del incendio",
+      "type": "date",
+      "required": true
+    },
+    {
+      "key": "DESCRIPCION",
+      "label": "Descripción de los daños",
+      "type": "textarea",
+      "required": false
+    }
+  ]
+}

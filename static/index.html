@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Strat & Tax | Despacho Fiscal Profesional</title>
+  <meta name="description" content="Estrategia fiscal, planificación y cumplimiento para empresas. Plataforma segura y moderna." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Background decor -->
+  <div class="bg-orbs" aria-hidden="true">
+    <span class="orb orb--a"></span>
+    <span class="orb orb--b"></span>
+    <span class="orb orb--c"></span>
+  </div>
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a class="brand" href="index.html" aria-label="Strat & Tax">
+        <!-- Si tenés logo local, dejalo -->
+        <img class="brand__logo" src="stratandtax.png" alt="Strat & Tax" onerror="this.style.display='none'">
+        <div class="brand__text">
+          <div class="brand__name">STRAT & TAX</div>
+          <div class="brand__tag">Estrategia fiscal & cumplimiento</div>
+        </div>
+      </a>
+
+      <nav class="nav" aria-label="Navegación principal">
+        <a class="nav__link" href="#about">Sobre nosotros</a>
+        <a class="nav__link" href="#services">Servicios</a>
+        <a class="nav__link nav__cta" href="contacto.html">Acceso / Registro</a>
+      </nav>
+
+      <button class="nav__toggle" type="button" aria-label="Abrir menú" onclick="document.body.classList.toggle('nav-open')">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main>
+    <section class="hero" id="hero">
+      <div class="container hero__inner">
+        <div class="hero__copy">
+          <div class="badge">
+            <span class="badge__dot"></span>
+            Plataforma profesional · AWS-ready
+          </div>
+
+          <h1 class="hero__title">
+            Fiscalidad corporativa con
+            <span class="gradient-text">precisión</span> y
+            <span class="gradient-text">estrategia</span>.
+          </h1>
+
+          <p class="hero__subtitle">
+            Soluciones fiscales integrales para empresas: planificación, auditoría y automatización documental.
+            Seguridad, claridad y ejecución.
+          </p>
+
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="contacto.html">
+              Ingresar al sistema
+              <span class="btn__icon">→</span>
+            </a>
+            <a class="btn btn--ghost" href="#services">Ver servicios</a>
+          </div>
+
+          <div class="hero__proof">
+            <div class="stat">
+              <div class="stat__value">+10</div>
+              <div class="stat__label">Años de experiencia</div>
+            </div>
+            <div class="stat">
+              <div class="stat__value">24/7</div>
+              <div class="stat__label">Acceso a plataforma</div>
+            </div>
+            <div class="stat">
+              <div class="stat__value">100%</div>
+              <div class="stat__label">Enfoque compliance</div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero__card" aria-label="Resumen ejecutivo">
+          <div class="card card--glass">
+            <div class="card__header">
+              <div class="card__title">Resumen ejecutivo</div>
+              <div class="pill">Enterprise</div>
+            </div>
+
+            <ul class="checklist">
+              <li>Optimización tributaria y planificación</li>
+              <li>Automatización de documentos y procesos</li>
+              <li>Reportes claros para decisiones rápidas</li>
+              <li>Seguridad y trazabilidad</li>
+            </ul>
+
+            <div class="card__footer">
+              <a class="btn btn--soft" href="contacto.html">Acceder</a>
+              <span class="muted">Respuesta rápida · soporte profesional</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="hero__fade" aria-hidden="true"></div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="about">
+      <div class="container section__inner">
+        <div class="section__head">
+          <h2 class="h2">Sobre nosotros</h2>
+          <p class="lead">
+            Somos un despacho fiscal orientado a resultados: claridad, confidencialidad y ejecución.
+          </p>
+        </div>
+
+        <div class="grid grid--2">
+          <div class="card card--soft">
+            <h3 class="h3">Excelencia y confidencialidad</h3>
+            <p class="muted">
+              Acompañamos a empresas y profesionales con asesoramiento estratégico, cumplimiento normativo y procesos
+              eficientes. Nuestro enfoque: minimizar riesgos, maximizar claridad.
+            </p>
+
+            <div class="divider"></div>
+
+            <div class="mini-grid">
+              <div class="mini">
+                <div class="mini__kpi">Riesgo ↓</div>
+                <div class="mini__text">Estandarización y control</div>
+              </div>
+              <div class="mini">
+                <div class="mini__kpi">Tiempo ↓</div>
+                <div class="mini__text">Automatización documental</div>
+              </div>
+              <div class="mini">
+                <div class="mini__kpi">Decisión ↑</div>
+                <div class="mini__text">Información accionable</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card card--media">
+            <div class="media">
+              <img
+                src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1600&q=80"
+                alt="Equipo profesional en consultoría"
+                loading="lazy"
+              />
+              <div class="media__overlay">
+                <div class="media__title">Asesoramiento con estándar corporativo</div>
+                <div class="media__subtitle">Proceso, trazabilidad y calidad</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section class="section section--alt" id="services">
+      <div class="container section__inner">
+        <div class="section__head">
+          <h2 class="h2">Servicios</h2>
+          <p class="lead">
+            Un portafolio claro, profesional y escalable según tus necesidades.
+          </p>
+        </div>
+
+        <div class="grid grid--3">
+          <article class="card card--service">
+            <div class="icon">📌</div>
+            <h3 class="h3">Consultoría fiscal</h3>
+            <p class="muted">Estrategias personalizadas para optimizar tu carga tributaria con cumplimiento.</p>
+          </article>
+
+          <article class="card card--service">
+            <div class="icon">🧾</div>
+            <h3 class="h3">Auditorías</h3>
+            <p class="muted">Revisiones exhaustivas para asegurar coherencia documental y normativa.</p>
+          </article>
+
+          <article class="card card--service">
+            <div class="icon">📈</div>
+            <h3 class="h3">Planificación financiera</h3>
+            <p class="muted">Proyección, reducción de riesgos y decisiones informadas para la dirección.</p>
+          </article>
+        </div>
+
+        <div class="cta">
+          <div class="cta__text">
+            <h3 class="h3">¿Listo para operar con estándar enterprise?</h3>
+            <p class="muted">Accedé al sistema y completá tus datos en minutos.</p>
+          </div>
+          <a class="btn btn--primary" href="contacto.html">Ir a Acceso <span class="btn__icon">→</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__left">
+        <div class="footer__brand">STRAT & TAX</div>
+        <div class="muted">© 2025 · Todos los derechos reservados</div>
+      </div>
+      <div class="footer__right">
+        <a class="footer__link" href="#about">Sobre nosotros</a>
+        <a class="footer__link" href="#services">Servicios</a>
+        <a class="footer__link" href="contacto.html">Acceso</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Cierra menú mobile al navegar
+    document.querySelectorAll('.nav__link').forEach(a => {
+      a.addEventListener('click', () => document.body.classList.remove('nav-open'));
+    });
+  </script>
+</body>
+</html>

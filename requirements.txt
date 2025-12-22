@@ -1,0 +1,6 @@
+﻿Flask
+python-docx
+gunicorn
+PyJWT
+bcrypt
+sqlite-utils

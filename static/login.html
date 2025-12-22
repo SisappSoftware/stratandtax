@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Acceso | Strat & Tax</title>
+  <meta name="description" content="Acceso seguro a la plataforma Strat & Tax." />
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS PRO -->
+  <link rel="stylesheet" href="style2.css" />
+</head>
+
+<body>
+
+  <!-- Background FX -->
+  <div class="fx" aria-hidden="true">
+    <div class="fx-orb fx-orb--1"></div>
+    <div class="fx-orb fx-orb--2"></div>
+    <div class="fx-orb fx-orb--3"></div>
+    <div class="fx-grid"></div>
+    <div class="fx-vignette"></div>
+  </div>
+
+  <!-- Minimal Topbar -->
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a class="brand" href="index.html">
+        <span class="brand__mark">
+          <img class="brand__logo" src="stratandtax.png" alt="" onerror="this.style.display='none'">
+          <span class="brand__fallback">S</span>
+        </span>
+        <span class="brand__meta">
+          <span class="brand__name">STRAT &amp; TAX</span>
+          <span class="brand__tag">Acceso a plataforma</span>
+        </span>
+      </a>
+
+      <a class="nav__link nav__link--cta" href="index.html">Volver</a>
+    </div>
+  </header>
+
+  <!-- Login Section -->
+  <main class="section section--final">
+    <div class="container">
+
+      <div class="grid grid--2">
+
+        <!-- Left: Copy -->
+        <section class="card card--soft">
+          <h2 class="h2">Acceso seguro</h2>
+          <p class="lead">
+            Ingresá con tus credenciales para operar en la plataforma fiscal.
+            Todos los accesos están protegidos y auditados.
+          </p>
+
+          <ul class="check">
+            <li><span class="check__i">✓</span><span>Autenticación segura</span></li>
+            <li><span class="check__i">✓</span><span>Sesiones controladas</span></li>
+            <li><span class="check__i">✓</span><span>Infraestructura AWS</span></li>
+            <li><span class="check__i">✓</span><span>Estándar corporativo</span></li>
+          </ul>
+        </section>
+
+        <!-- Right: Login Card -->
+        <section class="card card--glass">
+          <div class="card__header">
+            <div class="card__title">Ingreso de usuario</div>
+            <div class="pill">Clientes</div>
+          </div>
+
+          <div class="card__body">
+            <form id="loginForm" autocomplete="off">
+
+              <label class="muted">Usuario</label>
+              <input
+                class="input"
+                id="username"
+                type="text"
+                placeholder="usuario@empresa.com"
+                required
+              />
+
+              <label class="muted" style="margin-top:12px">Contraseña</label>
+              <input
+                class="input"
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                required
+              />
+
+              <button class="btn btn--primary btn--full" type="submit" style="margin-top:16px">
+                Ingresar
+                <span class="btn__icon">→</span>
+              </button>
+
+              <div id="loginError" class="muted" style="margin-top:14px;color:#fca5a5"></div>
+            </form>
+          </div>
+
+          <div class="card__footer">
+            <span class="muted">Acceso protegido · uso interno</span>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__left">
+        <div class="footer__brand">STRAT &amp; TAX</div>
+        <div class="muted">© 2025 · Plataforma fiscal</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Logic -->
+  <script>
+    const API_BASE_URL = "";
+    const LOGIN_ENDPOINT = "/auth/login";
+
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const errorBox = document.getElementById("loginError");
+
+      errorBox.textContent = "";
+
+      try {
+        const res = await fetch(LOGIN_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: user, password: pass })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          errorBox.textContent = data.error || "Credenciales inválidas";
+          return;
+        }
+
+        localStorage.setItem("token", data.token);
+
+        // 👉 Redirección post-login
+        window.location.href = "dashboard.html";
+
+
+      } catch (err) {
+        errorBox.textContent = "Error de conexión con el servidor";
+      }
+    });
+  </script>
+
+</body>
+</html>

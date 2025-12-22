@@ -1,0 +1,30 @@
+{
+  "label": "Alumbrado urbano",
+  "description": "Solicitud de reparación o instalación de alumbrado público",
+  "fields": [
+    {
+      "key": "NOMBRE",
+      "label": "Nombre completo",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "DNI",
+      "label": "DNI",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "DIRECCION",
+      "label": "Dirección del reclamo",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "TELEFONO",
+      "label": "Teléfono de contacto",
+      "type": "text",
+      "required": false
+    }
+  ]
+}
