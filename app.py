@@ -49,6 +49,7 @@ from dataclasses import dataclass
 from typing import Dict, Any, Optional, List, Tuple
 from flask import send_from_directory
 from routes.admin_templates_routes import bp as admin_templates_bp
+from core.auth import create_user, get_user_by_email
 
 from flask import (
     Flask,
@@ -134,6 +135,20 @@ app = Flask(
 )
 
 
+def ensure_superadmin():
+    email = "root@demo.com"
+    password = "Root123!"
+    role = "superadmin"
+
+    try:
+        if not get_user_by_email(email):
+            create_user(email, password, role=role)
+            print("Superadmin creado automáticamente")
+    except Exception as e:
+        print("Superadmin ya existe o error:", e)
+
+
+
 # -----------------------------------------------------------------------------
 # Helpers de archivos / paths
 # -----------------------------------------------------------------------------
@@ -142,6 +157,7 @@ FILENAME_SAFE_RE = re.compile(r"[^a-zA-Z0-9._-]+")
 
 ensure_schema()
 bootstrap_admin_if_needed()
+ensure_superadmin()
 app.register_blueprint(auth_bp)
 app.register_blueprint(client_bp)
 app.register_blueprint(superadmin_bp)
