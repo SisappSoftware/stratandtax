@@ -1,82 +1,44 @@
-const token = localStorage.getItem("token");
 const PACK_ID = "pack_demo_5docs";
+const token = localStorage.getItem("token");
 
 if (!token) {
   window.location.href = "/login.html";
 }
-
-const form = document.getElementById("dynamicForm");
-const statusMsg = document.getElementById("statusMsg");
-const generateBtn = document.getElementById("generateBtn");
-const packsTable = document.getElementById("packsTable");
 
 function logout() {
   localStorage.removeItem("token");
   window.location.href = "/login.html";
 }
 
-/* ===== USER ===== */
-fetch("/auth/me", {
-  headers: { Authorization: `Bearer ${token}` }
-})
-.then(r => r.json())
-.then(u => {
-  document.getElementById("userEmail").textContent = u.email;
-});
+/* GENERAR PACK */
+document.getElementById("generateBtn").onclick = () => {
 
-fetch("/client/active-form", {
-  headers: { Authorization: `Bearer ${token}` }
-})
-.then(r => r.json())
-.then(res => {
-  if (!res.ok) {
-    statusMsg.textContent = "Error cargando formulario";
-    return;
-  }
+  const data = {
+    NOMBRE: document.getElementById("NOMBRE").value.trim(),
+    DNI: document.getElementById("DNI").value.trim(),
+    DIRECCION: document.getElementById("DIRECCION").value.trim(),
+    LOCALIDAD: document.getElementById("LOCALIDAD").value.trim(),
+    EXPEDIENTE: document.getElementById("EXPEDIENTE").value.trim()
+  };
 
-  // LIMPIAMOS POR LAS DUDAS
-  form.innerHTML = "";
-
-  res.schema.fields.forEach(field => {
-    const div = document.createElement("div");
-    div.className = "field";
-
-    const label = document.createElement("label");
-    label.textContent = field.label;
-
-    const input = document.createElement("input");
-    input.name = field.key;
-    input.placeholder = field.label;
-    input.required = true;
-
-    div.appendChild(label);
-    div.appendChild(input);
-    form.appendChild(div);
-  });
-});
-
-/* ===== GENERATE ===== */
-generateBtn.onclick = () => {
-  const inputs = document.querySelectorAll("#dynamicForm input");
-  const data = {};
-
-  for (const input of inputs) {
-    if (!input.value.trim()) {
+  for (const k in data) {
+    if (!data[k]) {
       alert("Completá todos los campos");
-      input.focus();
       return;
     }
-    data[input.name] = input.value;
   }
 
-  statusMsg.textContent = "Generando documentación...";
-  generateBtn.disabled = true;
+  const btn = document.getElementById("generateBtn");
+  const status = document.getElementById("statusMsg");
+
+  btn.disabled = true;
+  status.textContent = "Generando documentación...";
 
   fetch("/client/generate-pack", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
+      Authorization: "Bearer " + token
     },
     body: JSON.stringify({
       pack_id: PACK_ID,
@@ -85,39 +47,46 @@ generateBtn.onclick = () => {
   })
   .then(r => r.json())
   .then(res => {
-    generateBtn.disabled = false;
+    btn.disabled = false;
 
     if (!res.ok) {
-      statusMsg.textContent = "Error generando documentación";
+      status.textContent = "Error generando documentación";
+      status.className = "status error";
       return;
     }
 
-    statusMsg.textContent =
-      "✔ Documentación generada y enviada por email";
+    status.innerHTML =
+      `✔ Generado correctamente –
+       <a href="${res.zip_download}" target="_blank">Descargar ZIP</a>`;
+    status.className = "status ok";
 
-    form.reset();
     loadHistory();
+  })
+  .catch(() => {
+    btn.disabled = false;
+    status.textContent = "Error inesperado";
+    status.className = "status error";
   });
 };
 
-
-/* ===== HISTORY ===== */
+/* HISTORIAL */
 function loadHistory() {
   fetch("/client/packs", {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: "Bearer " + token }
   })
   .then(r => r.json())
   .then(res => {
-    packsTable.innerHTML = "";
+    const table = document.getElementById("historyTable");
+    table.innerHTML = "";
+
     res.packs.forEach(p => {
-      packsTable.innerHTML += `
+      table.innerHTML += `
         <tr>
           <td>${p.pack_id}</td>
           <td>${p.created_at}</td>
           <td>${p.email_sent ? "Enviado" : "Error"}</td>
-          <td><a href="/download/${p.zip_name}" target="_blank">Descargar</a></td>
-        </tr>
-      `;
+          <td><a href="/download/${p.zip_name}" target="_blank">ZIP</a></td>
+        </tr>`;
     });
   });
 }
