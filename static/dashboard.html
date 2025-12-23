@@ -136,32 +136,41 @@ th, td {
       <!-- FORMULARIO ESTÁTICO -->
       <div class="form-grid">
 
-        <div class="field">
-          <label>Nombre completo</label>
-          <input id="NOMBRE">
-        </div>
-
-        <div class="field">
-          <label>DNI</label>
-          <input id="DNI">
-        </div>
-
-        <div class="field">
-          <label>Dirección</label>
-          <input id="DIRECCION">
-        </div>
-
-        <div class="field">
-          <label>Localidad</label>
-          <input id="LOCALIDAD">
-        </div>
-
-        <div class="field">
-          <label>Expediente</label>
-          <input id="EXPEDIENTE">
-        </div>
-
+      <div class="field">
+        <label>Razón social</label>
+        <input id="razon_social" placeholder="Empresa S.A.">
       </div>
+
+      <div class="field">
+        <label>RFC</label>
+        <input id="r_f_c" placeholder="XAXX010101000">
+      </div>
+
+      <div class="field">
+        <label>Número de contrato</label>
+        <input id="numero_de_contrato" placeholder="CON-2025-001">
+      </div>
+
+      <div class="field">
+        <label>Nombre completo del firmante</label>
+        <input id="nombre_completo_de_la_persona_que_firma_la_solicitud"
+              placeholder="Juan Pérez">
+      </div>
+
+      <div class="field">
+        <label>Domicilio del cliente</label>
+        <input id="domicilio_del_cliente"
+              placeholder="Av. Principal 123, Ciudad">
+      </div>
+
+      <div class="field">
+        <label>Monto de la operación (sin IVA)</label>
+        <input id="monto_de_la_operacion_Sin_IVA"
+              placeholder="100000">
+      </div>
+
+    </div>
+
 
       <button id="generateBtn">Generar documentación</button>
       <div id="statusMsg" class="status"></div>
