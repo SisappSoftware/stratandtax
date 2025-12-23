@@ -1,388 +1,260 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>Dashboard | Strat & Tax</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>Strat & Tax | Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b1020;
+  --card: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.15);
+  --primary: #4f46e5;
+  --secondary: #22d3ee;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+}
 
-  <!-- Base CSS -->
-  <link rel="stylesheet" href="style2.css">
+* {
+  box-sizing: border-box;
+}
 
-  <style>
-    :root {
-      --bg:#0b1020;
-      --panel:#0f172a;
-      --card:rgba(255,255,255,.06);
-      --primary:#6366f1;
-      --muted:#94a3b8;
-      --radius:18px;
-    }
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  background: radial-gradient(circle at top, #111827, #020617);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-    * { box-sizing:border-box; }
-    body { margin:0; background:var(--bg); font-family:Inter,sans-serif; color:white; }
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-    /* ===== Layout ===== */
-    .app {
-      display:grid;
-      grid-template-columns:260px 1fr;
-      min-height:100vh;
-    }
+@keyframes glow {
+  0% { box-shadow: 0 0 0 rgba(79,70,229,0.2); }
+  100% { box-shadow: 0 0 20px rgba(79,70,229,0.6); }
+}
 
-    /* ===== Sidebar ===== */
-    .sidebar {
-      background:linear-gradient(180deg,#0c122c,#070b1a);
-      padding:28px 22px;
-      display:flex;
-      flex-direction:column;
-      gap:28px;
-      border-right:1px solid rgba(255,255,255,.05);
-    }
+/* ===== LAYOUT ===== */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
 
-    .brand {
-      font-weight:800;
-      letter-spacing:.5px;
-      font-size:18px;
-    }
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 260px;
+  background: rgba(15,23,42,0.8);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border);
+  padding: 30px 20px;
+  animation: fadeUp .6s ease;
+}
 
-    .nav {
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
+.sidebar h2 {
+  margin: 0 0 40px;
+  font-size: 20px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  color: transparent;
+}
 
-    .nav-item {
-      padding:12px 14px;
-      border-radius:12px;
-      cursor:pointer;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      color:#c7d2fe;
-      transition:.2s;
-    }
+.sidebar a {
+  display: block;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: all .3s ease;
+}
 
-    .nav-item:hover {
-      background:rgba(99,102,241,.12);
-    }
+.sidebar a:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  transform: translateX(6px);
+}
 
-    .nav-item.active {
-      background:linear-gradient(135deg,#6366f1,#818cf8);
-      color:white;
-      box-shadow:0 10px 30px rgba(99,102,241,.35);
-    }
+/* ===== CONTENT ===== */
+.content {
+  flex: 1;
+  padding: 40px;
+  animation: fadeUp .8s ease;
+}
 
-    .sidebar-footer {
-      margin-top:auto;
-      font-size:13px;
-      color:var(--muted);
-    }
+/* ===== HEADER ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
 
-    .logout {
-      color:#fca5a5;
-      cursor:pointer;
-      margin-top:10px;
-    }
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+}
 
-    /* ===== Main ===== */
-    .main {
-      padding:40px;
-    }
+.user {
+  color: var(--muted);
+}
 
-    .container {
-      max-width:1200px;
-      margin:0 auto;
-    }
+/* ===== CARD ===== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  backdrop-filter: blur(20px);
+  animation: fadeUp 1s ease;
+}
 
-    .header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:32px;
-    }
+/* ===== FORM ===== */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 25px;
+  margin-top: 25px;
+}
 
-    .header h1 {
-      font-size:28px;
-      font-weight:800;
-    }
+.field {
+  position: relative;
+}
 
-    .user-pill {
-      background:rgba(255,255,255,.06);
-      padding:8px 14px;
-      border-radius:999px;
-      font-size:14px;
-    }
+.field input {
+  width: 100%;
+  padding: 16px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.3);
+  color: var(--text);
+  font-size: 15px;
+  outline: none;
+  transition: all .3s ease;
+}
 
-    /* ===== Cards ===== */
-    .cards {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:22px;
-    }
+.field input:focus {
+  border-color: var(--primary);
+  animation: glow .6s alternate infinite;
+}
 
-    .card {
-      background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
-      border-radius:var(--radius);
-      padding:26px;
-      transition:.25s;
-      box-shadow:0 20px 60px rgba(0,0,0,.35);
-    }
+.field label {
+  position: absolute;
+  top: -10px;
+  left: 14px;
+  background: #020617;
+  padding: 0 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
 
-    .card:hover {
-      transform:translateY(-4px);
-      box-shadow:0 30px 80px rgba(0,0,0,.45);
-    }
+/* ===== BUTTON ===== */
+button {
+  margin-top: 30px;
+  padding: 16px 32px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all .3s ease;
+}
 
-    .card h3 { margin:0 0 8px; }
-    .muted { color:var(--muted); }
+button:hover {
+  transform: scale(1.05);
+}
 
-    /* ===== Buttons ===== */
-    .btn {
-      background:linear-gradient(135deg,#6366f1,#818cf8);
-      color:white;
-      border:none;
-      padding:10px 18px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:600;
-      margin-top:14px;
-    }
+.status {
+  margin-top: 20px;
+  font-weight: bold;
+}
 
-    .btn:disabled {
-      opacity:.6;
-      cursor:not-allowed;
-    }
+/* ===== HISTORY ===== */
+.history-item {
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.05);
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  transition: all .3s ease;
+}
 
-    /* ===== Forms ===== */
-    .input, textarea {
-      width:100%;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:12px;
-      padding:12px 14px;
-      color:white;
-      margin-bottom:14px;
-    }
+.history-item:hover {
+  transform: translateY(-4px);
+  background: rgba(255,255,255,0.08);
+}
 
-    label {
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:6px;
-      display:block;
-    }
-
-    /* ===== Table ===== */
-    table {
-      width:100%;
-      border-collapse:collapse;
-      margin-top:12px;
-    }
-
-    th,td {
-      padding:12px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      font-size:14px;
-    }
-
-    th { color:#c7d2fe; text-align:left; }
-
-    /* ===== Toast ===== */
-    .toast {
-      position:fixed;
-      bottom:30px;
-      right:30px;
-      background:#111827;
-      padding:14px 20px;
-      border-radius:12px;
-      opacity:0;
-      transition:.3s;
-      box-shadow:0 20px 50px rgba(0,0,0,.5);
-    }
-
-    .toast.show { opacity:1; }
-
-    /* ===== Responsive ===== */
-    @media(max-width:900px){
-      .app { grid-template-columns:1fr; }
-      .sidebar { position:fixed; left:-100%; }
-      .main { padding:24px; }
-    }
-  </style>
+@media (max-width: 900px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+}
+</style>
 </head>
 
 <body>
 
-<script>
-const token = localStorage.getItem("token");
-if (!token) location.href="login.html";
-</script>
-
-<div class="app">
+<div class="layout">
 
   <aside class="sidebar">
-    <div class="brand">STRAT & TAX</div>
-
-    <div class="nav" id="nav">
-      <div class="nav-item active" data-view="home">🏠 Inicio</div>
-      <div class="nav-item" data-view="forms">📝 Formularios</div>
-      <div class="nav-item" data-view="docs">📄 Mis documentos</div>
-    </div>
-
-    <div class="sidebar-footer">
-      <div id="userEmail"></div>
-      <div class="logout" onclick="logout()">Cerrar sesión</div>
-    </div>
+    <h2>Strat & Tax</h2>
+    <a href="#">Dashboard</a>
+    <a href="#">Generar documentación</a>
+    <a href="#">Historial</a>
+    <a href="#">Cerrar sesión</a>
   </aside>
 
-  <main class="main">
-    <div class="container">
-      <div class="header">
-        <h1 id="title">Dashboard</h1>
-        <div class="user-pill" id="userRole"></div>
-      </div>
-      <div id="content"></div>
+  <main class="content">
+
+    <div class="header">
+      <h1>Dashboard</h1>
+      <div class="user">cliente@demo.com</div>
     </div>
+
+    <div class="card">
+      <h3>Generar documentación</h3>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Nombre completo</label>
+          <input id="NOMBRE">
+        </div>
+        <div class="field">
+          <label>DNI</label>
+          <input id="DNI">
+        </div>
+        <div class="field">
+          <label>Dirección</label>
+          <input id="DIRECCION">
+        </div>
+      </div>
+
+      <button>Generar documentación</button>
+      <div class="status"> </div>
+    </div>
+
+    <div class="card">
+      <h3>Historial</h3>
+
+      <div class="history-item">
+        <div>
+          <strong>pack_demo_5docs</strong><br>
+          <small>23/12/2025</small>
+        </div>
+        <a href="#">Descargar ZIP</a>
+      </div>
+    </div>
+
   </main>
 
 </div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-let USER=null;
-
-fetch("/auth/me",{headers:{Authorization:"Bearer "+token}})
-.then(r=>r.json())
-.then(u=>{
-  USER=u;
-  document.getElementById("userEmail").textContent=u.email;
-  document.getElementById("userRole").textContent=u.role.toUpperCase();
-  loadHome();
-});
-
-document.getElementById("nav").onclick=e=>{
-  const i=e.target.closest(".nav-item");
-  if(!i)return;
-  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
-  i.classList.add("active");
-  if(i.dataset.view==="home")loadHome();
-  if(i.dataset.view==="forms")loadForms();
-  if(i.dataset.view==="docs")loadDocs();
-};
-
-function setTitle(t){document.getElementById("title").textContent=t;}
-
-function toast(msg){
-  const t=document.getElementById("toast");
-  t.textContent=msg;
-  t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),3000);
-}
-
-/* ===== Views ===== */
-function loadHome(){
-  setTitle("Inicio");
-  content.innerHTML=`
-    <div class="cards">
-      <div class="card"><h3>Usuario</h3><p class="muted">${USER.email}</p></div>
-      <div class="card"><h3>Rol</h3><p class="muted">${USER.role}</p></div>
-      <div class="card"><h3>Estado</h3><p class="muted">Cuenta activa</p></div>
-    </div>
-  `;
-}
-
-function loadForms(){
-  setTitle("Formularios");
-  fetch("/client/forms",{headers:{Authorization:"Bearer "+token}})
-  .then(r=>r.json())
-  .then(fs=>{
-    content.innerHTML=`<div class="cards">${
-      fs.map(f=>`
-        <div class="card">
-          <h3>${f.label}</h3>
-          <p class="muted">${f.description||""}</p>
-          <button class="btn" onclick="openForm('${f.id}')">Completar</button>
-        </div>
-      `).join("")
-    }</div>`;
-  });
-}
-
-function openForm(id){
-  fetch(`/client/forms/${id}`,{headers:{Authorization:"Bearer "+token}})
-  .then(r=>r.json())
-  .then(s=>{
-    setTitle(s.label);
-    content.innerHTML=`
-      <div class="card">
-        <form id="form">
-          ${s.fields.map(f=>`
-            <label>${f.label}</label>
-            ${f.type==="textarea"
-              ? `<textarea name="${f.key}"></textarea>`
-              : `<input class="input" type="${f.type||"text"}" name="${f.key}">`
-            }
-          `).join("")}
-          <button class="btn">Generar documento</button>
-        </form>
-      </div>
-    `;
-    document.getElementById("form").onsubmit=e=>{
-      e.preventDefault();
-      const data={};
-      new FormData(e.target).forEach((v,k)=>data[k]=v);
-      generate(id,data,e.target.querySelector("button"));
-    };
-  });
-}
-
-function generate(id,data,btn){
-  btn.disabled=true;
-  btn.textContent="Generando...";
-  fetch("/client/generate",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      Authorization:"Bearer "+token
-    },
-    body:JSON.stringify({template_type:id,data,output_prefix:id})
-  })
-  .then(r=>r.json())
-  .then(()=>{
-    toast("Documento generado");
-    loadDocs();
-  });
-}
-
-function loadDocs(){
-  setTitle("Mis documentos");
-  fetch("/client/documents",{headers:{Authorization:"Bearer "+token}})
-  .then(r=>r.json())
-  .then(ds=>{
-    content.innerHTML=`
-      <div class="card">
-        <table>
-          <tr><th>Fecha</th><th>Trámite</th><th>Archivo</th></tr>
-          ${ds.map(d=>`
-            <tr>
-              <td>${d.created_at}</td>
-              <td>${d.template_type}</td>
-              <td><a href="/download/${d.filename}">Descargar</a></td>
-            </tr>
-          `).join("")}
-        </table>
-      </div>
-    `;
-  });
-}
-
-function logout(){
-  localStorage.removeItem("token");
-  location.href="login.html";
-}
-</script>
 
 </body>
 </html>

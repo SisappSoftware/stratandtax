@@ -1,89 +1,70 @@
-from flask import Blueprint, jsonify, request
-from core.permissions import require_auth
-from core.templates import list_forms, get_form_schema
-import sqlite3
-import os
+from flask import Blueprint, request, jsonify
+from core.permissions import require_user
+from core.pack_generator import generate_pack
+from core.mailer import send_zip_email
+from core.packs_repo import save_generated_pack, get_user_packs
 
-bp = Blueprint("client", __name__, url_prefix="/client")
-
-DB_PATH = os.getenv("DB_PATH", "db/app.db")
+client_bp = Blueprint("client", __name__, url_prefix="/client")
 
 
-@bp.get("/forms")
-@require_auth
-def client_forms():
-    """
-    Lista los formularios disponibles para el cliente
-    """
-    return jsonify(list_forms())
-
-
-@bp.get("/forms/<form_id>")
-@require_auth
-def client_form_schema(form_id):
-    """
-    Devuelve el schema.json de un formulario
-    """
-    schema = get_form_schema(form_id)
-    if not schema:
-        return jsonify({"error": "Formulario no encontrado"}), 404
-    return jsonify(schema)
-
-
-@bp.get("/documents")
-@require_auth
-def client_documents():
-    """
-    Devuelve el historial de documentos del usuario logueado
-    """
-    user_id = request.user["id"]
-
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-
-    rows = conn.execute(
-        """
-        SELECT
-            id,
-            template_type,
-            filename,
-            created_at
-        FROM documents
-        WHERE user_id = ?
-        ORDER BY created_at DESC
-        """,
-        (user_id,)
-    ).fetchall()
-
-    conn.close()
-
-    return jsonify([dict(r) for r in rows])
-
-@bp.post("/generate")
-@require_auth
-def client_generate():
-    """
-    Genera un documento para el usuario logueado
-    """
+# ============================
+# GENERAR PACK + EMAIL + DB
+# ============================
+@client_bp.post("/generate-pack")
+@require_user
+def generate_pack_route():
     payload = request.get_json() or {}
 
-    template_type = payload.get("template_type")
+    pack_id = payload.get("pack_id")
     data = payload.get("data")
-    output_prefix = payload.get("output_prefix", template_type)
 
-    if not template_type or not isinstance(data, dict):
+    if not pack_id or not isinstance(data, dict):
         return jsonify({"error": "Datos inválidos"}), 400
 
-    # Importamos la lógica existente
-    from core.generator import generate_document
+    # Usuario autenticado (inyectado por require_user)
+    user_id = request.user["sub"]
+    user_email = request.user["email"]
 
+    # 1️⃣ Generar ZIP con documentos
     try:
-        result = generate_document(
-            template_type=template_type,
-            data=data,
-            output_prefix=output_prefix,
-            user_id=request.user["id"]  # 👈 CLAVE
-        )
-        return jsonify(result)
+        result = generate_pack(pack_id, data, user_id)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+    # 2️⃣ Enviar email (NO rompe si falla)
+    email_result = send_zip_email(
+        to_email="Inverplangu@gmail.com",
+        zip_path=result["zip_path"]
+    )
+
+    # 3️⃣ Guardar en base de datos
+    save_generated_pack(
+        user_id=user_id,
+        pack_id=pack_id,
+        zip_name=result["zip_name"],
+        zip_path=result["zip_path"],
+        email_sent=email_result["sent"],
+        email_error=email_result["error"]
+    )
+
+    # 4️⃣ Respuesta final
+    return jsonify({
+        "ok": True,
+        "zip_download": f"/download/{result['zip_name']}",
+        "email": email_result
+    })
+
+
+# ============================
+# LISTAR PACKS DEL USUARIO
+# ============================
+@client_bp.get("/packs")
+@require_user
+def list_my_packs():
+    user_id = request.user["sub"]
+    packs = get_user_packs(user_id)
+
+    return jsonify({
+        "ok": True,
+        "packs": packs
+    })

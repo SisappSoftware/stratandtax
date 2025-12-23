@@ -1,0 +1,11 @@
+{
+  "label": "Pack Demo (5 documentos)",
+  "description": "Completar una vez, generar 5 documentos y un ZIP",
+  "fields": [
+    { "key": "NOMBRE", "label": "Nombre completo", "type": "text", "required": true },
+    { "key": "DNI", "label": "DNI", "type": "text", "required": true },
+    { "key": "DIRECCION", "label": "Dirección", "type": "text", "required": true },
+    { "key": "CIUDAD", "label": "Ciudad", "type": "text", "required": true },
+    { "key": "EMAIL", "label": "Email del cliente", "type": "email", "required": false }
+  ]
+}

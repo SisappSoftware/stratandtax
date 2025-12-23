@@ -1,114 +1,38 @@
-import os
-import uuid
-import sqlite3
-from datetime import datetime
 from docx import Document
-
-# ===============================
-# CONFIGURACIÓN
-# ===============================
-
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
-TEMPLATES_DIR = os.path.join(BASE_DIR, "plantillas")
-OUTPUT_DIR = os.path.join(BASE_DIR, "outputs")
-DB_PATH = os.getenv("DB_PATH", os.path.join(BASE_DIR, "db", "app.db"))
-
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+import os
 
 
-# ===============================
-# UTILIDADES
-# ===============================
-
-def replace_placeholders(doc: Document, data: dict) -> int:
+def generate_document(template_file, output_file, data, user_id):
     """
-    Reemplaza placeholders ${CLAVE} en el documento.
-    Devuelve cuántos reemplazos se hicieron.
+    template_file: ruta completa al .docx
+    output_file: ruta completa de salida
+    data: dict con placeholders
+    user_id: id del usuario (para auditoría futura)
     """
-    replaced = 0
 
-    def _replace_in_paragraph(paragraph):
-        nonlocal replaced
+    # Abrir directamente la plantilla (ya fue validada antes)
+    doc = Document(template_file)
+
+    # Reemplazar en párrafos
+    for paragraph in doc.paragraphs:
         for key, value in data.items():
             placeholder = f"${{{key}}}"
             if placeholder in paragraph.text:
                 paragraph.text = paragraph.text.replace(placeholder, str(value))
-                replaced += 1
 
-    for p in doc.paragraphs:
-        _replace_in_paragraph(p)
-
+    # Reemplazar en tablas
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
-                for p in cell.paragraphs:
-                    _replace_in_paragraph(p)
+                for key, value in data.items():
+                    placeholder = f"${{{key}}}"
+                    if placeholder in cell.text:
+                        cell.text = cell.text.replace(placeholder, str(value))
 
-    return replaced
+    # Crear carpeta destino si no existe
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
+    # Guardar documento final
+    doc.save(output_file)
 
-# ===============================
-# FUNCIÓN PRINCIPAL
-# ===============================
-
-def generate_document(template_type: str, data: dict, output_prefix: str, user_id: int):
-    """
-    Genera un documento Word a partir de una plantilla
-    y guarda el registro en la base de datos.
-    """
-
-    # -------- paths --------
-    template_dir = os.path.join(TEMPLATES_DIR, template_type)
-    template_path = os.path.join(template_dir, "solicitud.docx")
-
-    if not os.path.isfile(template_path):
-        raise FileNotFoundError("Plantilla no encontrada")
-
-    # -------- abrir docx --------
-    doc = Document(template_path)
-
-    replaced_count = replace_placeholders(doc, data)
-
-    # -------- nombre archivo --------
-    uid = uuid.uuid4().hex
-    filename = f"{output_prefix}_{uid}.docx"
-    output_path = os.path.join(OUTPUT_DIR, filename)
-
-    doc.save(output_path)
-
-    # -------- guardar en DB --------
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    cursor.execute(
-        """
-        INSERT INTO documents (
-            user_id,
-            template_type,
-            filename,
-            created_at
-        )
-        VALUES (?, ?, ?, ?)
-        """,
-        (
-            user_id,
-            template_type,
-            filename,
-            datetime.utcnow().isoformat()
-        )
-    )
-
-    conn.commit()
-    conn.close()
-
-    # -------- respuesta --------
-    return {
-        "ok": True,
-        "filename": filename,
-        "download_url": f"/download/{filename}",
-        "summary": {
-            "replaced_count": replaced_count,
-            "keys": list(data.keys())
-        }
-    }
+    return output_file

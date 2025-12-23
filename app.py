@@ -45,6 +45,8 @@ import shutil
 import logging
 import mimetypes
 import traceback
+from dotenv import load_dotenv
+load_dotenv()
 from dataclasses import dataclass
 from typing import Dict, Any, Optional, List, Tuple
 from flask import send_from_directory
@@ -59,16 +61,18 @@ from flask import (
     abort,
     Response,
 )
-from docx import Document
+from docx import Document # type: ignore
 from core.auth import ensure_schema, bootstrap_admin_if_needed
 from routes.auth_routes import bp as auth_bp
-from routes.client_routes import bp as client_bp
+from routes.client_routes import client_bp
 from routes.superadmin_routes import bp as superadmin_bp
 
 
 # -----------------------------------------------------------------------------
 # Configuración general
 # -----------------------------------------------------------------------------
+
+
 
 def _env_bool(name: str, default: bool = False) -> bool:
     v = os.getenv(name, "").strip().lower()
@@ -742,23 +746,21 @@ def generate():
         return jsonify({"ok": False, "error": "Error interno generando documento."}), 500
 
 
-@app.route("/download/<path:filename>", methods=["GET"])
-def download(filename: str):
-    """
-    Descarga el documento generado.
-    """
-    ensure_dirs()
-    try:
-        path = output_path_for(filename)
-        if not os.path.isfile(path):
-            abort(404, description="Archivo no encontrado.")
-        return send_file(path, as_attachment=True, download_name=os.path.basename(path))
-    except ValueError:
-        abort(400, description="Nombre de archivo inválido.")
-    except Exception:
-        logger.exception("Error en /download")
-        abort(500, description="Error interno descargando archivo.")
+@app.route("/download/<filename>")
+def download(filename):
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    zip_dir = os.path.join(base_dir, "outputs", "zips")
 
+    file_path = os.path.join(zip_dir, filename)
+
+    if not os.path.isfile(file_path):
+        abort(404, description="Archivo no encontrado.")
+
+    return send_from_directory(
+        directory=zip_dir,
+        path=filename,
+        as_attachment=True
+    )
 
 @app.route("/debug/template/<template_type>", methods=["GET"])
 def debug_template(template_type: str):
@@ -821,4 +823,4 @@ if __name__ == "__main__":
     port = _env_int("PORT", 5000)  # Render inyecta PORT
     debug = os.getenv("FLASK_ENV", "").lower() != "production"
     logger.info("Iniciando Zeon en http://0.0.0.0:%s (debug=%s)", port, debug)
-    app.run(host="0.0.0.0", port=port, debug=debug)
+    app.run(host="0.0.0.0", port=port, debug=False)

@@ -1,0 +1,10 @@
+{
+  "id": "pack_demo_5docs",
+  "docs": [
+    { "template": "doc1.docx", "output": "01_Contrato.docx" },
+    { "template": "doc2.docx", "output": "02_Anexo.docx" },
+    { "template": "doc3.docx", "output": "03_Declaracion.docx" },
+    { "template": "doc4.docx", "output": "04_Autorizacion.docx" },
+    { "template": "doc5.docx", "output": "05_Resumen.docx" }
+  ]
+}

@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from core.permissions import require_superadmin
+from core.pack_generator import generate_pack
 import sqlite3
 import os
 
