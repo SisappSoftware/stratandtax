@@ -2,22 +2,26 @@ import os
 import uuid
 import json
 import zipfile
+import tempfile
 from datetime import datetime
 from core.generator import generate_document
 
 
-
-PACKS_DIR = "plantillas/packs"
-OUTPUT_DOCS = "outputs/docs"
-OUTPUT_ZIPS = "outputs/zips"
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(BASE_DIR)
+TMP_DIR = tempfile.gettempdir()
 
 def generate_pack(pack_id: str, data: dict, user_id: int):
     print("=== DEBUG PACK GENERATOR ===")
     print("CWD:", os.getcwd())
     print("PACK_ID:", pack_id)
 
-    pack_path = os.path.join(PACKS_DIR, pack_id)
+    pack_path = os.path.join(
+        ROOT_DIR,
+        "plantillas",
+        "packs",
+        pack_id
+    )
     print("PACK_PATH:", pack_path)
 
     if not os.path.isdir(pack_path):
@@ -26,7 +30,6 @@ def generate_pack(pack_id: str, data: dict, user_id: int):
 
     print("FILES EN PACK_PATH:", os.listdir(pack_path))
 
-    pack_path = os.path.join(PACKS_DIR, pack_id)
     if not os.path.isdir(pack_path):
         raise ValueError("Pack inexistente")
 
@@ -34,9 +37,11 @@ def generate_pack(pack_id: str, data: dict, user_id: int):
         pack_cfg = json.load(f)
 
     run_id = uuid.uuid4().hex
-    run_dir = os.path.join(OUTPUT_DOCS, run_id)
+    run_dir = os.path.join(TMP_DIR, "stratandtax_docs", run_id)
+    zip_dir = os.path.join(TMP_DIR, "stratandtax_zips")
+
     os.makedirs(run_dir, exist_ok=True)
-    os.makedirs(OUTPUT_ZIPS, exist_ok=True)
+    os.makedirs(zip_dir, exist_ok=True)
 
     generated_files = []
 
@@ -55,7 +60,7 @@ def generate_pack(pack_id: str, data: dict, user_id: int):
 
         generated_files.append(output_path)
 
-    zip_path = os.path.join(OUTPUT_ZIPS, f"{pack_id}_{run_id}.zip")
+    zip_path = os.path.join(zip_dir, f"{pack_id}_{run_id}.zip")
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
         for f in generated_files:
             z.write(f, arcname=os.path.basename(f))
