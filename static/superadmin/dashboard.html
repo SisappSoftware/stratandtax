@@ -1,84 +1,394 @@
-
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Superadmin | Strat & Tax</title>
+<meta charset="utf-8">
+<title>SuperAdmin | Control Center</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="admin.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#020617;
+  --panel:#0b1227;
+  --card:rgba(255,255,255,.06);
+  --stroke:rgba(255,255,255,.10);
+  --primary:#6366f1;
+  --ok:#22c55e;
+  --warn:#f59e0b;
+  --bad:#ef4444;
+  --muted:#94a3b8;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,sans-serif;
+  background:radial-gradient(circle at top,#11164a,#020617);
+  color:white;
+}
+a{color:#a5b4fc;text-decoration:none}
+.app{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  min-height:100vh;
+}
+.sidebar{
+  background:linear-gradient(180deg,#070b1a,#020617);
+  padding:26px;
+  border-right:1px solid var(--stroke);
+}
+.brand{
+  font-weight:900;
+  letter-spacing:.6px;
+  margin-bottom:28px;
+}
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.nav-item{
+  padding:12px 14px;
+  border-radius:14px;
+  cursor:pointer;
+  color:#c7d2fe;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  transition:.2s;
+}
+.nav-item:hover{background:rgba(99,102,241,.12)}
+.nav-item.active{
+  background:linear-gradient(135deg,#6366f1,#818cf8);
+  color:white;
+  box-shadow:0 14px 40px rgba(99,102,241,.35);
+}
+.main{
+  padding:34px;
+}
+.container{
+  max-width:1300px;
+  margin:0 auto;
+}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:22px;
+}
+.header h1{
+  margin:0;
+  font-size:28px;
+  font-weight:900;
+}
+.pill{
+  background:rgba(255,255,255,.06);
+  padding:8px 14px;
+  border-radius:999px;
+  font-size:14px;
+  color:#cbd5e1;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;
+}
+.card{
+  background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
+  border:1px solid var(--stroke);
+  border-radius:var(--radius);
+  padding:22px;
+  box-shadow:0 22px 70px rgba(0,0,0,.45);
+}
+.card h3{margin-top:0}
+.muted{color:var(--muted)}
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+input,select,textarea{
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--stroke);
+  background:rgba(255,255,255,.06);
+  color:white;
+}
+textarea{min-height:140px}
+.btn{
+  background:linear-gradient(135deg,#6366f1,#818cf8);
+  border:none;
+  color:white;
+  font-weight:700;
+  border-radius:12px;
+  padding:10px 14px;
+  cursor:pointer;
+}
+.btn.secondary{
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--stroke);
+}
+.btn.danger{
+  background:rgba(239,68,68,.18);
+  border:1px solid rgba(239,68,68,.35);
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:12px;
+}
+th,td{
+  padding:10px;
+  border-bottom:1px solid var(--stroke);
+  font-size:14px;
+  text-align:left;
+}
+th{color:#c7d2fe}
+.toast{
+  position:fixed;
+  right:24px;
+  bottom:24px;
+  background:#0b1227;
+  border:1px solid var(--stroke);
+  padding:12px 14px;
+  border-radius:14px;
+  opacity:0;
+  transition:.25s;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+}
+.toast.show{opacity:1}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:sticky;top:0}
+}
+</style>
 </head>
 
 <body>
+<script>
+const token = localStorage.getItem("token");
+if(!token) location.href="login.html";
+</script>
 
-<div class="layout">
+<div class="app">
 
-  <aside class="sidebar">
-    <h2>Superadmin</h2>
-    <a href="#overview">Resumen</a>
-    <a href="#users">Usuarios</a>
-    <a href="#templates">Plantillas</a>
-    <a href="#packs">Packs generados</a>
-    <a href="#config">Configuración</a>
-    <a href="#" onclick="logout()">Salir</a>
-  </aside>
+<aside class="sidebar">
+  <div class="brand">SUPERADMIN</div>
+  <div class="nav" id="nav">
+    <div class="nav-item active" data-view="overview">📊 Overview</div>
+    <div class="nav-item" data-view="users">👤 Usuarios</div>
+    <div class="nav-item" data-view="docs">📄 Documentos</div>
+  </div>
+</aside>
 
-  <main class="content">
-
-    <!-- RESUMEN -->
-    <section id="overview" class="section">
-      <h1>Resumen general</h1>
-      <div class="kpi-grid">
-        <div class="kpi"><span id="k_users">0</span><p>Usuarios</p></div>
-        <div class="kpi"><span id="k_packs">0</span><p>Packs generados</p></div>
-        <div class="kpi"><span id="k_emails">0</span><p>Emails enviados</p></div>
-        <div class="kpi"><span id="k_errors">0</span><p>Errores</p></div>
+<main class="main">
+  <div class="container">
+    <div class="header">
+      <h1 id="title">Overview</h1>
+      <div class="row">
+        <div class="pill" id="me">validando…</div>
+        <button class="btn secondary" onclick="logout()">Salir</button>
       </div>
-    </section>
+    </div>
 
-    <!-- USUARIOS -->
-    <section id="users" class="section">
-      <h2>Usuarios</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Rol</th>
-            <th>Alta</th>
-            <th>Packs</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="usersTable"></tbody>
-      </table>
-    </section>
+    <div id="content"></div>
+  </div>
+</main>
 
-    <!-- PLANTILLAS -->
-    <section id="templates" class="section">
-      <h2>Plantillas</h2>
-      <div id="packsList"></div>
-    </section>
-
-    <!-- PACKS -->
-    <section id="packs" class="section">
-      <h2>Packs generados</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Usuario</th>
-            <th>Pack</th>
-            <th>Fecha</th>
-            <th>Email</th>
-            <th>ZIP</th>
-          </tr>
-        </thead>
-        <tbody id="packsTable"></tbody>
-      </table>
-    </section>
-
-  </main>
 </div>
 
-<script src="/superadmin.js"></script>
+<div class="toast" id="toast"></div>
+
+<script>
+const content = document.getElementById("content");
+const titleEl = document.getElementById("title");
+
+function toast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2500);
+}
+
+function api(path, opts={}){
+  opts.headers = opts.headers || {};
+  opts.headers["Authorization"] = "Bearer " + token;
+  return fetch(path, opts).then(r=>r.json());
+}
+
+function logout(){
+  localStorage.removeItem("token");
+  location.href="login.html";
+}
+
+api("/auth/me").then(me=>{
+  if(me.role!=="superadmin"){ logout(); return; }
+  document.getElementById("me").textContent = me.email+" · SUPERADMIN";
+});
+
+document.getElementById("nav").onclick = e=>{
+  const it=e.target.closest(".nav-item");
+  if(!it) return;
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+  it.classList.add("active");
+  const v=it.dataset.view;
+  if(v==="overview") loadOverview();
+  if(v==="users") loadUsers();
+  if(v==="templates") loadTemplates();
+  if(v==="docs") loadDocs();
+  if(v==="complaints") loadComplaints();
+};
+
+function loadOverview(){
+  titleEl.textContent="Overview";
+  Promise.all([
+    api("/admin/users"),
+    api("/admin/templates"),
+    api("/admin/documents"),
+    api("/admin/complaints")
+  ]).then(([u,t,d,c])=>{
+    content.innerHTML=`
+      <div class="grid">
+        <div class="card"><h3>Usuarios</h3><p class="muted">${u.length}</p></div>
+        <div class="card"><h3>Plantillas</h3><p class="muted">${t.length}</p></div>
+        <div class="card"><h3>Documentos</h3><p class="muted">${d.length}</p></div>
+        <div class="card"><h3>Reclamos</h3><p class="muted">${c.length}</p></div>
+      </div>
+    `;
+  });
+}
+
+function loadUsers(){
+  titleEl.textContent="Usuarios";
+  api("/admin/users").then(users=>{
+    content.innerHTML=`
+      <div class="card">
+        <h3>Crear usuario</h3>
+        <div class="row">
+          <input id="uEmail" placeholder="email">
+          <input id="uPass" placeholder="password">
+          <select id="uRole">
+            <option>user</option>
+            <option>admin</option>
+            <option>superadmin</option>
+          </select>
+          <button class="btn" onclick="createUser()">Crear</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <table>
+          <tr><th>Email</th><th>Rol</th><th>Activo</th></tr>
+          ${users.map(u=>`
+            <tr>
+              <td>${u.email}</td>
+              <td>${u.role}</td>
+              <td>${u.active}</td>
+            </tr>`).join("")}
+        </table>
+      </div>
+    `;
+  });
+}
+
+function createUser(){
+  api("/admin/users",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json", "Authorization":"Bearer "+token },
+    body:JSON.stringify({
+      email:uEmail.value,
+      password:uPass.value,
+      role:uRole.value
+    })
+  }).then(r=>{
+    if(r.error) toast(r.error);
+    else{ toast("Usuario creado"); loadUsers(); }
+  });
+}
+
+function loadTemplates(){
+  titleEl.textContent="Plantillas";
+  api("/admin/templates").then(t=>{
+    content.innerHTML=`
+      <div class="card">
+        <h3>Crear plantilla</h3>
+        <input id="tId" placeholder="template_id">
+        <textarea id="tSchema" placeholder='{"label":"...","fields":[...]}'></textarea>
+        <input id="tDocx" type="file">
+        <button class="btn" onclick="createTemplate()">Crear</button>
+      </div>
+
+      <div class="card">
+        <table>
+          <tr><th>ID</th><th>Label</th><th>Activa</th></tr>
+          ${t.map(x=>`
+            <tr>
+              <td>${x.id}</td>
+              <td>${x.label}</td>
+              <td>${x.active}</td>
+            </tr>`).join("")}
+        </table>
+      </div>
+    `;
+  });
+}
+
+function createTemplate(){
+  const fd=new FormData();
+  fd.append("template_id",tId.value);
+  fd.append("schema_json",tSchema.value);
+  fd.append("docx",tDocx.files[0]);
+  fetch("/admin/templates",{method:"POST",headers:{Authorization:"Bearer "+token},body:fd})
+    .then(r=>r.json())
+    .then(res=>{
+      if(res.error) toast(res.error);
+      else{ toast("Plantilla creada"); loadTemplates(); }
+    });
+}
+
+function loadDocs(){
+  titleEl.textContent="Documentos";
+  api("/admin/documents").then(d=>{
+    content.innerHTML=`
+      <div class="card">
+        <table>
+          <tr><th>Usuario</th><th>Trámite</th><th>Archivo</th></tr>
+          ${d.map(x=>`
+            <tr>
+              <td>${x.email}</td>
+              <td>${x.template_type}</td>
+              <td><a href="/download/${x.filename}">Descargar</a></td>
+            </tr>`).join("")}
+        </table>
+      </div>
+    `;
+  });
+}
+
+function loadComplaints(){
+  titleEl.textContent="Reclamos";
+  api("/admin/complaints").then(c=>{
+    content.innerHTML=`
+      <div class="card">
+        <table>
+          <tr><th>Usuario</th><th>Tipo</th><th>Mensaje</th><th>Estado</th></tr>
+          ${c.map(x=>`
+            <tr>
+              <td>${x.email}</td>
+              <td>${x.type}</td>
+              <td>${x.message}</td>
+              <td>${x.status}</td>
+            </tr>`).join("")}
+        </table>
+      </div>
+    `;
+  });
+}
+
+loadOverview();
+</script>
 </body>
 </html>
