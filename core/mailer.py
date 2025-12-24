@@ -1,52 +1,83 @@
-import smtplib
 import os
-from email.message import EmailMessage
+import logging
+from docx import Document
+
+# Logger
+logger = logging.getLogger(__name__)
 
 
-print("DEBUG SMTP_USER:", os.getenv("SMTP_USER"))
-print("DEBUG SMTP_PASS:", os.getenv("SMTP_PASS"))
-print("DEBUG SMTP_HOST:", os.getenv("SMTP_HOST"))
-print("DEBUG SMTP_PORT:", os.getenv("SMTP_PORT"))
-
-def send_zip_email(to_email: str, zip_path: str):
-    """
-    Envía un ZIP por email.
-    No lanza excepción: devuelve dict con status.
-    """
-
-    SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
-    SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-    SMTP_USER = os.getenv("SMTP_USER")
-    SMTP_PASS = os.getenv("SMTP_PASS")
-
-    if not SMTP_USER or not SMTP_PASS:
-        return {"sent": False, "error": "SMTP no configurado"}
-
-    msg = EmailMessage()
-    msg["Subject"] = "Documentación generada"
-    msg["From"] = SMTP_USER
-    msg["To"] = to_email
-    msg.set_content(
-        "Hola,\n\nAdjuntamos el paquete de documentos generado automáticamente.\n\nSaludos."
+def generate_document(template_path: str, output_path: str, data: dict, user_id: int):
+    logger.info(
+        "generate_document START template_path=%s output_path=%s user_id=%s",
+        template_path,
+        output_path,
+        user_id
     )
 
     try:
-        with open(zip_path, "rb") as f:
-            zip_data = f.read()
-
-        msg.add_attachment(
-            zip_data,
-            maintype="application",
-            subtype="zip",
-            filename=os.path.basename(zip_path)
+        # --- Verificar template ---
+        logger.info(
+            "Checking template exists=%s path=%s",
+            os.path.exists(template_path),
+            template_path
         )
 
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASS)
-            server.send_message(msg)
+        if not os.path.exists(template_path):
+            logger.error("Template DOCX not found")
+            raise FileNotFoundError(template_path)
 
-        return {"sent": True, "error": None}
+        # --- Abrir DOCX ---
+        logger.info("Opening DOCX template")
+        doc = Document(template_path)
+        logger.info("DOCX template opened successfully")
 
-    except Exception as e:
-        return {"sent": False, "error": str(e)}
+        # --- Reemplazar texto en párrafos ---
+        replaced_count = 0
+
+        for p in doc.paragraphs:
+            original_text = p.text
+            for key, value in data.items():
+                placeholder = f"${{{key}}}"
+                if placeholder in p.text:
+                    p.text = p.text.replace(placeholder, str(value))
+            if p.text != original_text:
+                replaced_count += 1
+
+        # --- Reemplazar texto en tablas ---
+        for table in doc.tables:
+            for row in table.rows:
+                for cell in row.cells:
+                    for p in cell.paragraphs:
+                        original_text = p.text
+                        for key, value in data.items():
+                            placeholder = f"${{{key}}}"
+                            if placeholder in p.text:
+                                p.text = p.text.replace(placeholder, str(value))
+                        if p.text != original_text:
+                            replaced_count += 1
+
+        logger.info("Text replacement completed replaced_count=%s", replaced_count)
+
+        # --- Guardar DOCX ---
+        output_dir = os.path.dirname(output_path)
+        logger.info("Ensuring output_dir exists=%s", output_dir)
+        os.makedirs(output_dir, exist_ok=True)
+
+        logger.info("Saving DOCX to output_path=%s", output_path)
+        doc.save(output_path)
+
+        logger.info(
+            "DOCX saved exists=%s size=%s",
+            os.path.exists(output_path),
+            os.path.getsize(output_path) if os.path.exists(output_path) else None
+        )
+
+        if not os.path.exists(output_path):
+            logger.error("DOCX save failed")
+            raise RuntimeError("DOCX was not saved")
+
+        logger.info("generate_document SUCCESS")
+
+    except Exception:
+        logger.exception("generate_document FAILED")
+        raise

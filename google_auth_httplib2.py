@@ -18,7 +18,7 @@ from __future__ import absolute_import
 
 import http.client
 import logging
-
+logger = logging.getLogger(__name__)
 from google.auth import exceptions
 from google.auth import transport
 import httplib2

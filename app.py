@@ -43,6 +43,7 @@ import json
 import time
 import shutil
 import logging
+logger = logging.getLogger(__name__)
 import mimetypes
 import traceback
 from dotenv import load_dotenv
