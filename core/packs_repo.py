@@ -1,102 +1,61 @@
-import os
-import smtplib
 import logging
-from email.message import EmailMessage
+from core.db import get_db
 
-# Logger
 logger = logging.getLogger(__name__)
 
-# SMTP config desde entorno
-SMTP_HOST = os.getenv("SMTP_HOST")
-SMTP_PORT = os.getenv("SMTP_PORT")
-SMTP_USER = os.getenv("SMTP_USER")
-SMTP_PASS = os.getenv("SMTP_PASS")
 
-DISABLE_EMAIL = os.getenv("DISABLE_EMAIL") == "true"
-
-
-def send_zip_email(to_email: str, zip_path: str, zip_filename: str):
+def save_generated_pack(
+    user_id: int,
+    pack_id: str,
+    zip_name: str,
+    zip_path: str,
+    email_sent: bool,
+    email_error: str | None
+):
     logger.info(
-        "send_zip_email START to_email=%s zip_path=%s zip_filename=%s",
-        to_email,
+        "save_generated_pack START user_id=%s pack_id=%s zip_name=%s",
+        user_id,
+        pack_id,
+        zip_name
+    )
+
+    logger.info(
+        "Pack metadata zip_path=%s email_sent=%s email_error=%s",
         zip_path,
-        zip_filename
+        email_sent,
+        email_error
     )
-
-    logger.info(
-        "SMTP config host=%s port=%s user=%s disable_email=%s",
-        SMTP_HOST,
-        SMTP_PORT,
-        SMTP_USER,
-        DISABLE_EMAIL
-    )
-
-    # --- Email deshabilitado explícitamente ---
-    if DISABLE_EMAIL:
-        logger.warning("Email sending disabled via DISABLE_EMAIL")
-        return {
-            "sent": False,
-            "error": "Email disabled"
-        }
 
     try:
-        # --- Validaciones ---
-        if not all([SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS]):
-            logger.error("SMTP not fully configured")
-            return {
-                "sent": False,
-                "error": "SMTP not configured"
-            }
+        conn = get_db()
+        logger.info("DB connection acquired")
 
-        if not os.path.exists(zip_path):
-            logger.error("ZIP file does not exist at %s", zip_path)
-            return {
-                "sent": False,
-                "error": "ZIP not found"
-            }
-
-        # --- Construir email ---
-        logger.info("Building email message")
-        msg = EmailMessage()
-        msg["Subject"] = "Documentación generada"
-        msg["From"] = SMTP_USER
-        msg["To"] = to_email
-        msg.set_content(
-            "Se adjunta el paquete de documentos generado automáticamente."
+        conn.execute(
+            """
+            INSERT INTO generated_packs (
+                user_id,
+                pack_id,
+                zip_name,
+                zip_path,
+                email_sent,
+                email_error
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                user_id,
+                pack_id,
+                zip_name,
+                zip_path,
+                int(email_sent),
+                email_error
+            )
         )
 
-        # --- Adjuntar ZIP ---
-        logger.info("Attaching ZIP file size=%s", os.path.getsize(zip_path))
-        with open(zip_path, "rb") as f:
-            msg.add_attachment(
-                f.read(),
-                maintype="application",
-                subtype="zip",
-                filename=zip_filename
-            )
-
-        # --- Envío SMTP ---
-        logger.info("Connecting to SMTP server")
-        with smtplib.SMTP(SMTP_HOST, int(SMTP_PORT), timeout=30) as server:
-            logger.info("Starting TLS")
-            server.starttls()
-
-            logger.info("Logging in SMTP")
-            server.login(SMTP_USER, SMTP_PASS)
-
-            logger.info("Sending email")
-            server.send_message(msg)
-
-        logger.info("Email sent successfully")
-
-        return {
-            "sent": True,
-            "error": None
-        }
+        logger.info("Insert executed, committing")
+        conn.commit()
+        logger.info("Commit successful")
 
     except Exception:
-        logger.exception("send_zip_email FAILED")
-        return {
-            "sent": False,
-            "error": "exception"
-        }
+        logger.exception("save_generated_pack FAILED")
+        raise
