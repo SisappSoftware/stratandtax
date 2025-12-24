@@ -1,83 +1,69 @@
 import os
+import smtplib
 import logging
-from docx import Document
+from email.message import EmailMessage
 
-# Logger
 logger = logging.getLogger(__name__)
 
+SMTP_HOST = os.getenv("SMTP_HOST")
+SMTP_PORT = os.getenv("SMTP_PORT")
+SMTP_USER = os.getenv("SMTP_USER")
+SMTP_PASS = os.getenv("SMTP_PASS")
 
-def generate_document(template_path: str, output_path: str, data: dict, user_id: int):
+DISABLE_EMAIL = os.getenv("DISABLE_EMAIL") == "true"
+
+
+def send_zip_email(to_email: str, zip_path: str, zip_filename: str):
     logger.info(
-        "generate_document START template_path=%s output_path=%s user_id=%s",
-        template_path,
-        output_path,
-        user_id
+        "send_zip_email START to_email=%s zip_path=%s zip_filename=%s",
+        to_email,
+        zip_path,
+        zip_filename
     )
 
+    logger.info(
+        "SMTP config host=%s port=%s user=%s disable_email=%s",
+        SMTP_HOST,
+        SMTP_PORT,
+        SMTP_USER,
+        DISABLE_EMAIL
+    )
+
+    if DISABLE_EMAIL:
+        logger.warning("Email disabled via DISABLE_EMAIL")
+        return {"sent": False, "error": "Email disabled"}
+
     try:
-        # --- Verificar template ---
-        logger.info(
-            "Checking template exists=%s path=%s",
-            os.path.exists(template_path),
-            template_path
-        )
+        if not all([SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS]):
+            logger.error("SMTP not fully configured")
+            return {"sent": False, "error": "SMTP not configured"}
 
-        if not os.path.exists(template_path):
-            logger.error("Template DOCX not found")
-            raise FileNotFoundError(template_path)
+        if not os.path.exists(zip_path):
+            logger.error("ZIP not found at %s", zip_path)
+            return {"sent": False, "error": "ZIP not found"}
 
-        # --- Abrir DOCX ---
-        logger.info("Opening DOCX template")
-        doc = Document(template_path)
-        logger.info("DOCX template opened successfully")
+        msg = EmailMessage()
+        msg["Subject"] = "Documentación generada"
+        msg["From"] = SMTP_USER
+        msg["To"] = to_email
+        msg.set_content("Se adjunta el paquete de documentos generado.")
 
-        # --- Reemplazar texto en párrafos ---
-        replaced_count = 0
+        with open(zip_path, "rb") as f:
+            msg.add_attachment(
+                f.read(),
+                maintype="application",
+                subtype="zip",
+                filename=zip_filename
+            )
 
-        for p in doc.paragraphs:
-            original_text = p.text
-            for key, value in data.items():
-                placeholder = f"${{{key}}}"
-                if placeholder in p.text:
-                    p.text = p.text.replace(placeholder, str(value))
-            if p.text != original_text:
-                replaced_count += 1
+        with smtplib.SMTP(SMTP_HOST, int(SMTP_PORT), timeout=30) as server:
+            server.starttls()
+            server.login(SMTP_USER, SMTP_PASS)
+            server.send_message(msg)
 
-        # --- Reemplazar texto en tablas ---
-        for table in doc.tables:
-            for row in table.rows:
-                for cell in row.cells:
-                    for p in cell.paragraphs:
-                        original_text = p.text
-                        for key, value in data.items():
-                            placeholder = f"${{{key}}}"
-                            if placeholder in p.text:
-                                p.text = p.text.replace(placeholder, str(value))
-                        if p.text != original_text:
-                            replaced_count += 1
-
-        logger.info("Text replacement completed replaced_count=%s", replaced_count)
-
-        # --- Guardar DOCX ---
-        output_dir = os.path.dirname(output_path)
-        logger.info("Ensuring output_dir exists=%s", output_dir)
-        os.makedirs(output_dir, exist_ok=True)
-
-        logger.info("Saving DOCX to output_path=%s", output_path)
-        doc.save(output_path)
-
-        logger.info(
-            "DOCX saved exists=%s size=%s",
-            os.path.exists(output_path),
-            os.path.getsize(output_path) if os.path.exists(output_path) else None
-        )
-
-        if not os.path.exists(output_path):
-            logger.error("DOCX save failed")
-            raise RuntimeError("DOCX was not saved")
-
-        logger.info("generate_document SUCCESS")
+        logger.info("Email sent successfully")
+        return {"sent": True, "error": None}
 
     except Exception:
-        logger.exception("generate_document FAILED")
-        raise
+        logger.exception("send_zip_email FAILED")
+        return {"sent": False, "error": "exception"}
